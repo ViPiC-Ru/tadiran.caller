@@ -1,4 +1,4 @@
-/* 0.0.1 наборщик номера по url схеме tel
+/* 0.0.2 наборщик номера по url схеме tel
 
 wscript caller.min.js <action> [<number>]
 
@@ -44,35 +44,38 @@ var caller = new App({
                     machine: "HKEY_LOCAL_MACHINE",
                     title: "Стационарный телефон",
                     original: "URL:Tel Protocol",
+                    name: "URL Protocol",
                     protocol: "tel",
                     type: "REG_SZ",
-                    name: "Caller"
+                    id: "Caller"
                 };
             };
             // выполняем регистрацию обработчика
             if (!error && "reg" == action) {// если нужно выполнить
                 try {// пробуем выполнить действия
                     value = '"' + wsh.fullName + '" "' + wsh.scriptFullName + '" ' + id + ' "%1"';
-                    shell.regWrite([data.root, data.name, ""].join(delim), data.title, data.type);
+                    shell.regWrite([data.root, data.id, ""].join(delim), data.title, data.type);
                     shell.regWrite([data.root, data.protocol, ""].join(delim), data.title, data.type);
-                    shell.regWrite([data.root, data.name, "shell", "open", "command", ""].join(delim), value, data.type);
-                    shell.regWrite([data.machine, "SOFTWARE", data.name, "Capabilities", "URLAssociations", data.protocol].join(delim), data.name, data.type);
-                    shell.regWrite([data.machine, "SOFTWARE", "RegisteredApplications", data.name].join(delim), ["Software", data.name, "Capabilities"].join(delim), data.type);
+                    shell.regWrite([data.root, data.protocol, data.name].join(delim), "", data.type);
+                    shell.regWrite([data.root, data.id, "shell", "open", "command", ""].join(delim), value, data.type);
+                    shell.regWrite([data.machine, "SOFTWARE", data.id, "Capabilities", "URLAssociations", data.protocol].join(delim), data.id, data.type);
+                    shell.regWrite([data.machine, "SOFTWARE", "RegisteredApplications", data.id].join(delim), ["Software", data.id, "Capabilities"].join(delim), data.type);
                 } catch (e) { error = 1; };
             };
             // удаляем регистрацию обработчика
             if (!error && "unreg" == action) {// если нужно выполнить
                 try {// пробуем выполнить действия
-                    shell.regWrite([data.root, data.name, ""].join(delim), data.original, data.type);
+                    shell.regWrite([data.root, data.id, ""].join(delim), data.original, data.type);
                     shell.regWrite([data.root, data.protocol, ""].join(delim), data.original, data.type);
-                    try { shell.regDelete([data.root, data.name, "shell", "open", "command", ""].join(delim)); } catch (e) { };
-                    try { shell.regDelete([data.root, data.name, "shell", "open", ""].join(delim)); } catch (e) { };
-                    try { shell.regDelete([data.root, data.name, "shell", ""].join(delim)); } catch (e) { };
-                    try { shell.regDelete([data.root, data.name, ""].join(delim)); } catch (e) { };
-                    try { shell.regDelete([data.machine, "SOFTWARE", data.name, "Capabilities", "URLAssociations", ""].join(delim)); } catch (e) { };
-                    try { shell.regDelete([data.machine, "SOFTWARE", data.name, "Capabilities", ""].join(delim)); } catch (e) { };
-                    try { shell.regDelete([data.machine, "SOFTWARE", data.name, ""].join(delim)); } catch (e) { };
-                    try { shell.regDelete([data.machine, "SOFTWARE", "RegisteredApplications", data.name].join(delim)); } catch (e) { };
+                    shell.regWrite([data.root, data.protocol, data.name].join(delim), "", data.type);
+                    try { shell.regDelete([data.root, data.id, "shell", "open", "command", ""].join(delim)); } catch (e) { };
+                    try { shell.regDelete([data.root, data.id, "shell", "open", ""].join(delim)); } catch (e) { };
+                    try { shell.regDelete([data.root, data.id, "shell", ""].join(delim)); } catch (e) { };
+                    try { shell.regDelete([data.root, data.id, ""].join(delim)); } catch (e) { };
+                    try { shell.regDelete([data.machine, "SOFTWARE", data.id, "Capabilities", "URLAssociations", ""].join(delim)); } catch (e) { };
+                    try { shell.regDelete([data.machine, "SOFTWARE", data.id, "Capabilities", ""].join(delim)); } catch (e) { };
+                    try { shell.regDelete([data.machine, "SOFTWARE", data.id, ""].join(delim)); } catch (e) { };
+                    try { shell.regDelete([data.machine, "SOFTWARE", "RegisteredApplications", data.id].join(delim)); } catch (e) { };
                 } catch (e) { error = 2; };
             };
             // выполняем телефонный звонок
